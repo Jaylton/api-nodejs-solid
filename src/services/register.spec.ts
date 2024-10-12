@@ -4,17 +4,17 @@ import { compare } from 'bcryptjs';
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository';
 import { UserAlreadyExistsError } from './errors/user-already-exists-error';
 
-let registerService: RegisterService;
+let sut: RegisterService;
 
 describe('Register Service', async () => {
     beforeEach(() => {
         const usersRepository = new InMemoryUsersRepository();
-        registerService = new RegisterService(usersRepository);
+        sut = new RegisterService(usersRepository);
     });
 
     it('should be able to register', async () => {
 
-        const { user } = await registerService.execute({
+        const { user } = await sut.execute({
             name: 'John Doe',
             email: 'john@mail.com',
             password: '123456'
@@ -25,7 +25,7 @@ describe('Register Service', async () => {
 
     it('should hash user password', async () => {
 
-        const { user } = await registerService.execute({
+        const { user } = await sut.execute({
             name: 'John Doe',
             email: 'john@mail.com',
             password: '123456'
@@ -40,14 +40,14 @@ describe('Register Service', async () => {
 
         const email = 'john@mail.com';
 
-        await registerService.execute({
+        await sut.execute({
             name: 'John Doe',
             email: email,
             password: '123456'
         });
 
         await expect(async () => {
-            await registerService.execute({
+            await sut.execute({
                 name: 'John Doe',
                 email: email,
                 password: '123456'
