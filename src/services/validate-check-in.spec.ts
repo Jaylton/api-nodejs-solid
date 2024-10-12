@@ -1,11 +1,8 @@
 import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest';
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-check-ins-repository';
 import { ValidateCheckInService } from './validate-check-in';
-import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
-import { Decimal } from '@prisma/client/runtime/library';
-import { MaxDistanceError } from './errors/max-distance-error';
-import { MaxNumberOfCheckInsError } from './errors/max-number-of-check-ins-error';
 import { ResourceNotFoundError } from './errors/resource-not-found';
+import { LateCheckInValidationError } from './errors/late-check-in-validation-error';
 
 let sut: ValidateCheckInService;
 let checkInsRepository: InMemoryCheckInsRepository;
@@ -15,12 +12,12 @@ describe('Validate Check-in Service', async () => {
         checkInsRepository = new InMemoryCheckInsRepository();
         sut = new ValidateCheckInService(checkInsRepository);
 
-        // vi.useFakeTimers();
+        vi.useFakeTimers();
     });
 
-    // afterEach(() => {
-    //     vi.useRealTimers();
-    // });
+    afterEach(() => {
+        vi.useRealTimers();
+    });
 
     it('should be able to validate the check-in', async () => {
 
@@ -46,5 +43,25 @@ describe('Validate Check-in Service', async () => {
                 checkInId: 'invalid-check-in-id',
             })
         ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    });
+
+    it('should not be able to validate the check after 20 minutes', async () => {
+
+        vi.setSystemTime(new Date('2022-01-01T12:00:00'));
+
+        const createdCheckIn = await checkInsRepository.create({
+            user_id: 'user-id',
+            gym_id: 'gym-id',
+            validated_at: null,
+        });
+
+        vi.advanceTimersByTime(21 * 60 * 1000); // 21 minutes
+
+        expect(async () =>
+            await sut.execute({
+                checkInId: createdCheckIn.id,
+            })
+        ).rejects.toBeInstanceOf(LateCheckInValidationError);
+
     });
 })
