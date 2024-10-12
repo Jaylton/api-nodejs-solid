@@ -9,7 +9,7 @@ import { MaxNumberOfCheckInsError } from "./errors/max-number-of-check-ins-error
 interface CheckInRequest {
     userId: string;
     gymId: string;
-    userLatidude: number;
+    userLatitude: number;
     userLongitude: number;
 }
 
@@ -23,7 +23,7 @@ export class CheckInService {
         private readonly gymsRepository: GymsRepository
     ) { }
 
-    async execute({ userId, gymId, userLatidude, userLongitude }: CheckInRequest): Promise<CheckInResponse> {
+    async execute({ userId, gymId, userLatitude, userLongitude }: CheckInRequest): Promise<CheckInResponse> {
 
         const gym = await this.gymsRepository.findById(gymId);
 
@@ -33,7 +33,7 @@ export class CheckInService {
 
         //calculate distance between user and gym
         const distance = getDistanceBetweenCoordinates(
-            { latitude: userLatidude, longitude: userLongitude },
+            { latitude: userLatitude, longitude: userLongitude },
             { latitude: gym.latitude.toNumber(), longitude: gym.longitude.toNumber() }
         )
 

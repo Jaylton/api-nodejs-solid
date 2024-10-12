@@ -37,7 +37,7 @@ describe('Check-in Service', async () => {
         const { checkIn } = await sut.execute({
             userId: 'user-id',
             gymId: 'gym-id',
-            userLatidude: 0,
+            userLatitude: 0,
             userLongitude: 0,
         });
 
@@ -50,7 +50,7 @@ describe('Check-in Service', async () => {
         await sut.execute({
             userId: 'user-id',
             gymId: 'gym-id',
-            userLatidude: 0,
+            userLatitude: 0,
             userLongitude: 0,
         });
 
@@ -58,7 +58,7 @@ describe('Check-in Service', async () => {
             await sut.execute({
                 userId: 'user-id',
                 gymId: 'gym-id',
-                userLatidude: 0,
+                userLatitude: 0,
                 userLongitude: 0,
             })
         ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError);
@@ -71,7 +71,7 @@ describe('Check-in Service', async () => {
         await sut.execute({
             userId: 'user-id',
             gymId: 'gym-id',
-            userLatidude: 0,
+            userLatitude: 0,
             userLongitude: 0,
         });
 
@@ -80,7 +80,7 @@ describe('Check-in Service', async () => {
         const { checkIn } = await sut.execute({
             userId: 'user-id',
             gymId: 'gym-id',
-            userLatidude: 0,
+            userLatitude: 0,
             userLongitude: 0,
         });
 
@@ -103,7 +103,7 @@ describe('Check-in Service', async () => {
             return await sut.execute({
                 userId: 'user-id',
                 gymId: 'gym-id',
-                userLatidude: -7.8217924,
+                userLatitude: -7.8217924,
                 userLongitude: -39.0686429,
             });
         }).rejects.toBeInstanceOf(MaxDistanceError);
@@ -123,7 +123,7 @@ describe('Check-in Service', async () => {
         const { checkIn } = await sut.execute({
             userId: 'user-id',
             gymId: gym.id,
-            userLatidude: -7.8278848,
+            userLatitude: -7.8278848,
             userLongitude: -39.0715624,
         });
 
