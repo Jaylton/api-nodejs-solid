@@ -1,13 +1,18 @@
-import { expect, describe, it } from 'vitest';
+import { expect, describe, it, beforeEach } from 'vitest';
 import { RegisterService } from './register';
 import { compare } from 'bcryptjs';
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository';
 import { UserAlreadyExistsError } from './errors/user-already-exists-error';
 
+let registerService: RegisterService;
+
 describe('Register Service', async () => {
-    it('should be able to register', async () => {
+    beforeEach(() => {
         const usersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(usersRepository);
+        registerService = new RegisterService(usersRepository);
+    });
+
+    it('should be able to register', async () => {
 
         const { user } = await registerService.execute({
             name: 'John Doe',
@@ -19,8 +24,6 @@ describe('Register Service', async () => {
     });
 
     it('should hash user password', async () => {
-        const usersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(usersRepository);
 
         const { user } = await registerService.execute({
             name: 'John Doe',
@@ -34,8 +37,6 @@ describe('Register Service', async () => {
 
 
     it('should not be able to register with same email twice', async () => {
-        const usersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(usersRepository);
 
         const email = 'john@mail.com';
 
