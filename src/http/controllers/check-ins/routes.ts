@@ -13,6 +13,6 @@ export async function checkInsRoutes(app: FastifyInstance) {
     app.get('/gyms/history', historyController)
     app.get('/gyms/metrics', metricsController)
 
-    app.post('/gyms/:gymId/check-ins', createController)
+    app.post('/gyms/:gymId/check-in', createController)
     app.patch('/check-ins/:checkInId/validate', { onRequest: [verifyUserRole('ADMIN')] }, validateController)
 }

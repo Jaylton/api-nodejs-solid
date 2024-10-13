@@ -26,7 +26,7 @@ describe("Create Check-In (e2e)", () => {
         });
 
         const response = await request(app.server)
-            .post(`/gyms/${gym.id}/check-ins`)
+            .post(`/gyms/${gym.id}/check-in`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 latitude: -7.8279294,
@@ -50,7 +50,7 @@ describe("Create Check-In (e2e)", () => {
         });
 
         const response = await request(app.server)
-            .post(`/gyms/${gym.id}/check-ins`)
+            .post(`/gyms/${gym.id}/check-in`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 latitude: -7.8279294,

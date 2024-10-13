@@ -77,7 +77,7 @@ This project is a GymPass-style application built with Node.js, following SOLID 
 
 6. Start the application:
     ```bash
-    npm run dev
+    npm run start:dev
     ```
 
 ### Running Tests
@@ -95,11 +95,11 @@ This project is a GymPass-style application built with Node.js, following SOLID 
 ## API Endpoints
 
 ### User Endpoints
-- `POST /register`: Register a new user.
-- `POST /login`: Authenticate a user and return a JWT.
-- `GET /profile`: Retrieve the profile of the logged-in user.
-- `GET /check-ins/count`: Get the count of check-ins performed by the logged-in user.
-- `GET /check-ins/history`: Get the check-in history of the logged-in user.
+- `POST /users`: Register a new user.
+- `POST /sessions`: Authenticate a user and return a JWT.
+- `GET /me`: Retrieve the profile of the logged-in user.
+- `GET /gyms/metrics`: Get the count of check-ins performed by the logged-in user.
+- `GET /gyms/history`: Get the check-in history of the logged-in user.
 
 ### Gym Endpoints
 - `GET /gyms/nearby`: Search for nearby gyms based on the user’s location.
@@ -107,8 +107,8 @@ This project is a GymPass-style application built with Node.js, following SOLID 
 - `POST /gyms`: Register a new gym (admin only).
 
 ### Check-in Endpoints
-- `POST /gyms/:id/check-in`: Check-in at a gym.
-- `PATCH /check-ins/:id/validate`: Validate a user's check-in (admin only).
+- `POST /gyms/:gymId/check-in`: Check-in at a gym.
+- `PATCH /check-ins/:checkInId/validate`: Validate a user's check-in (admin only).
 
 ## License
 
