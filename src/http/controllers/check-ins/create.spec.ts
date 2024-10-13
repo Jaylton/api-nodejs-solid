@@ -1,4 +1,5 @@
 import { app } from "@/app";
+import { prisma } from "@/lib/prisma";
 import { createAndAuthenticateUser } from "@/utils/test/create-and-authenticate-user";
 import request from "supertest";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
@@ -14,19 +15,18 @@ describe("Create Check-In (e2e)", () => {
     it('should be able to make check-in', async () => {
         const { token } = await createAndAuthenticateUser(app);
 
-        const gymResponse = await request(app.server)
-            .post('/gyms')
-            .set('Authorization', `Bearer ${token}`)
-            .send({
+        const gym = await prisma.gym.create({
+            data: {
                 title: "Gym Name",
                 description: "Gym Address",
                 phone: "123456789",
                 latitude: -7.8279294,
                 longitude: -39.0715685,
-            });
+            }
+        });
 
         const response = await request(app.server)
-            .post(`/gyms/${gymResponse.body.gym.id}/check-ins`)
+            .post(`/gyms/${gym.id}/check-ins`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 latitude: -7.8279294,
@@ -39,19 +39,18 @@ describe("Create Check-In (e2e)", () => {
     it('should not be able to make check-in on distance gym', async () => {
         const { token } = await createAndAuthenticateUser(app);
 
-        const gymResponse = await request(app.server)
-            .post('/gyms')
-            .set('Authorization', `Bearer ${token}`)
-            .send({
+        const gym = await prisma.gym.create({
+            data: {
                 title: "Gym Name",
                 description: "Gym Address",
                 phone: "123456789",
                 latitude: -7.0279294,
                 longitude: -39.0715685,
-            });
+            }
+        });
 
         const response = await request(app.server)
-            .post(`/gyms/${gymResponse.body.gym.id}/check-ins`)
+            .post(`/gyms/${gym.id}/check-ins`)
             .set('Authorization', `Bearer ${token}`)
             .send({
                 latitude: -7.8279294,

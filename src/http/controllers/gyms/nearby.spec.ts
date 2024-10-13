@@ -1,4 +1,5 @@
 import { app } from "@/app";
+import { prisma } from "@/lib/prisma";
 import { createAndAuthenticateUser } from "@/utils/test/create-and-authenticate-user";
 import request from "supertest";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
@@ -14,27 +15,25 @@ describe("Nearby Gyms (e2e)", () => {
     it('should be able to list nearby gyms', async () => {
         const { token } = await createAndAuthenticateUser(app);
 
-        await request(app.server)
-            .post('/gyms')
-            .set('Authorization', `Bearer ${token}`)
-            .send({
+        await prisma.gym.create({
+            data: {
                 title: 'Gym Name',
                 description: 'Gym Description',
                 phone: 'Gym Phone',
                 latitude: -7.8279294,
                 longitude: -39.0715685,
-            });
+            }
+        });
 
-        await request(app.server)
-            .post('/gyms')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ // more than 10km away
+        await prisma.gym.create({
+            data: { // more than 10km away
                 title: 'Gym example 3',
                 description: 'Gym Description 3',
                 phone: 'Gym Phone',
                 latitude: -7.6001141,
                 longitude: -38.9753588,
-            });
+            }
+        });
 
         const response = await request(app.server)
             .get('/gyms/nearby')

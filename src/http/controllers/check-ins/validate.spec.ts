@@ -4,7 +4,7 @@ import { createAndAuthenticateUser } from "@/utils/test/create-and-authenticate-
 import request from "supertest";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 
-describe("Search Gyms (e2e)", () => {
+describe("Validate Check-In (e2e)", () => {
     beforeAll(async () => {
         await app.ready();
     })
@@ -12,10 +12,12 @@ describe("Search Gyms (e2e)", () => {
         await app.close();
     });
 
-    it('should be able to search gyms', async () => {
-        const { token } = await createAndAuthenticateUser(app);
+    it('should be able to validate check-in', async () => {
+        const { token } = await createAndAuthenticateUser(app, true);
 
-        await prisma.gym.create({
+        const user = await prisma.user.findFirstOrThrow();
+
+        const gym = await prisma.gym.create({
             data: {
                 title: "Gym Name",
                 description: "Gym Address",
@@ -25,25 +27,21 @@ describe("Search Gyms (e2e)", () => {
             }
         });
 
-        await prisma.gym.create({
+        let checkIn = await prisma.checkIn.create({
             data: {
-                title: "Gym Name 2",
-                description: "Gym Address",
-                phone: "123456789",
-                latitude: -7.8279294,
-                longitude: -39.0715685,
+                user_id: user.id,
+                gym_id: gym.id
             }
         });
 
         const response = await request(app.server)
-            .get('/gyms/search')
+            .patch(`/check-ins/${checkIn.id}/validate`)
             .set('Authorization', `Bearer ${token}`)
-            .query({
-                q: 'Name 2'
+            .send({
+                latitude: -7.8279294,
+                longitude: -39.0715685,
             });
 
-
-        expect(response.status).toEqual(200);
-        expect(response.body.gyms).toHaveLength(1);
+        expect(response.status).toEqual(204);
     });
 });
